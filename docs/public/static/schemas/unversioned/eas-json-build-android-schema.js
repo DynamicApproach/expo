@@ -1,3 +1,5 @@
+import { androidResources, androidResourceClasses } from './buildResources';
+
 export default [
   {
     name: 'withoutCredentials',
@@ -15,15 +17,14 @@ export default [
   },
   {
     name: 'resourceClass',
-    enum: ['default', 'medium', 'large'],
+    enum: ['default', ...androidResourceClasses],
     description: [
       'The Android-specific resource class that will be used to run this build.',
       '',
       'Android builders run on virtual machines in an isolated environment. Every build gets its own dedicated VM instance.',
       '',
       'Build resources:',
-      '- `medium` 4 CPU, 16 GB RAM (n2-standard-4 Google Cloud machine type)',
-      '- `large` 8 CPU, 32 GB RAM (n2-standard-8 Google Cloud machine type)',
+      ...androidResources,
       '- `default` maps to `medium`',
       '',
       'This can change over time. To ensure you stay on the same configuration even when we change our defaults, use the specific resource class name.',

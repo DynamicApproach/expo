@@ -6,6 +6,33 @@ description: Learn about the current build server infrastructure when using EAS.
 ---
 
 import { Collapsible } from '~/ui/components/Collapsible';
+import al from '@mdx-js/react';
+import { values, keys } from 'lodash';
+
+import resourceSpecs from '~/public/static/resource-specs.json';
+
+export const {
+  hardware: hardwareSpecs,
+  resources: { ios, android },
+} = resourceSpecs.data;
+
+export function HardwareList({ platform }) {
+  const data = platform === 'ios' ? ios : android;
+  return (
+    <ul>
+      {values(data).map(({ hardware }) =>
+        keys(hardware).map(name => {
+          const { cpu, memory, description } = hardwareSpecs[name];
+          return (
+            <li key={name}>
+              {cpu}, {memory} ({description})
+            </li>
+          );
+        })
+      )}
+    </ul>
+  );
+}
 
 > This document describes the current build infrastructure as of **June 27, 2022**. It is likely to change over time, and this document will be updated.
 
@@ -32,8 +59,9 @@ When selecting an image for the build you can use the full name provided below o
 Android builders run on virtual machines in an isolated environment. Every build gets its own dedicated VM instance.
 
 - Hardware:
-  - 4 CPU, 16 GB RAM (n2-standard-4 Google Cloud machine type)
-  - 8 CPU, 32 GB RAM (n2-standard-8 Google Cloud machine type)
+
+  <HardwareList platform="android" />
+
 - [npm cache deployed with Kubernetes](caching/#javascript-dependencies)
 - [Maven cache deployed with Kubernetes](caching/#android-dependencies)
 - Global Gradle configuration in **~/.gradle/gradle.properties**:
@@ -152,10 +180,9 @@ iOS builder VMs run on Mac Mini 8.1 hosts in an isolated environment. Every buil
 [Learn more about it here](eas-json/#resourceclass-2)
 
 - Hardware:
-  - Intel: Intel(R) Core(TM) i7-8700B CPU (6 cores/12 threads), 64 GB RAM
-  - M1: 3.2GHz 8-Core M1 (4 performance and 4 efficiency cores), 16 GB RAM
-  - M2: 3.4GHz 12-Core M2 (8 performance and 4 efficiency cores), 24 GB RAM
-  - M2 Pro: 3.4GHz 10-Core M2 Pro (6 performance and 4 efficiency cores), 32 GB RAM
+
+  <HardwareList platform="ios" />
+
 - [npm cache](caching/#javascript-dependencies)
 - [CocoaPods cache](caching/#ios-dependencies)
 - [`cocoapods-nexus-plugin`](https://github.com/expo/eas-build/tree/main/packages/cocoapods-nexus-plugin)
